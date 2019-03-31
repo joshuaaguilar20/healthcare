@@ -165,7 +165,7 @@ class Main {
         }
 
         function one() {
-          speak('Hello Joshua')
+          speak('Completed')
           changeflag = true;
           callcount++
         }

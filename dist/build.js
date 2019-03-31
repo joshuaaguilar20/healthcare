@@ -240,9 +240,13 @@ var Main = function () {
                 }
 
                 function one() {
-                  speak('Hello Joshua');
+                  speak('Assessment Completed');
                   changeflag = true;
                   callcount++;
+                  changeflag1 = false;
+                  callcount1 = 0;
+                  changeflag2 = false;
+                  callcount2 = 0;
                 }
                 function two() {
                   speak('Medication Administered');

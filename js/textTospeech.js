@@ -1,5 +1,5 @@
 /*
- * Check for browser support
+ * Joshua Aguilar 2019 
  */
 function init() {
     var supportMsg = document.getElementById('msg');

@@ -3,18 +3,10 @@
 
 
 
-// export const speek = (msg = "hello world") => {
-// }
-
-
 
 const confidenceHandlers = (globals) => {
-
-
-
-
-
-
+    document.getElementsbName(span)
+        .addEventListener("change", myScript);
 };
 
 

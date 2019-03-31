@@ -234,47 +234,37 @@ var Main = function () {
                   // Create a new instance of SpeechSynthesisUtterance.
                   var msg = new SpeechSynthesisUtterance();
 
-                  // Set the text.
                   msg.text = text;
 
-                  // // Set the attributes.
-                  // msg.volume = parseFloat(volumeInput.value);
-                  // msg.rate = parseFloat(rateInput.value);
-                  // msg.pitch = parseFloat(pitchInput.value);
-
-                  // If a voice has been selected, find the voice and set the
-                  // utterance instance's voice attribute.
-                  // if (voiceSelect.value) {
-                  //   msg.voice = speechSynthesis.getVoices().filter(function (voice) { return voice.name == voiceSelect.value; })[0];
-                  // }
-
-                  // Queue this utterance.
                   window.speechSynthesis.speak(msg);
                 }
 
-                if (globalRef[0] > 90 && changeflag == false && callcount == 0) {
+                function one() {
                   speak('Hello Joshua');
                   changeflag = true;
                   callcount++;
                 }
-                if (globalRef[1] > 90 && changeflag1 == false && callcount1 == 0) {
+                function two() {
                   speak('Medication Administered');
                   changeflag1 = true;
                   callcount1++;
                   changeflag = false;
-                  callcount--;
+                  callcount = 0;
                   changeflag2 = false;
-                  callcount2--;
-                }
-                if (globalRef[2] > 90 && changeflag2 == false && callcount2 == 0) {
+                  callcount2 = 0;
+                };
+
+                function three() {
                   speak('Advanced Cardiac Life Support Started');
                   changeflag2 = true;
                   callcount2++;
-                  callcount--;
+                  callcount = 0;
                   changeflag = false;
-                  callcount1--;
+                  callcount1 = 0;
                   changeflag1 = false;
                 }
+
+                globalRef[0] > 90 && changeflag == false && callcount == 0 ? one() : globalRef[1] > 90 && changeflag1 == false && callcount1 == 0 ? two() : globalRef[2] > 90 && changeflag2 == false && callcount2 == 0 ? three() : null;
               })();
 
               // Dispose image when done

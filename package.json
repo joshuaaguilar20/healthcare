@@ -9,8 +9,10 @@
     "@tensorflow/tfjs": "^0.13.0"
   },
   "scripts": {
-    "start": "google-chrome index.html --live --host localhost",
-    "build": "browserify main.js -o dist/build.js"
+    "start": "npm run build && npm run dev && npm run open",
+    "build": "browserify main.js -o dist/build.js",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "pre-commit": [
     "build"

@@ -23,13 +23,20 @@ const NUM_CLASSES = 3;
 const IMAGE_SIZE = 227;
 // K value for KNN
 const TOPK = 3;
-
+var globalRef = {};
+var callcount = 0;
+var changeflag = false;
+var callcount1 = 0;
+var changeflag1 = false;
+var callcount2 = 0;
+var changeflag2 = false;
 class Main {
   constructor() {
     // Initiate variables
     this.infoTexts = [];
     this.training = -1; // -1 when no class is being trained
     this.videoPlaying = false;
+
 
     // Initiate deeplearn.js math and knn classifier objects
     this.bindPage();
@@ -59,6 +66,7 @@ class Main {
 
       // Create info text
       const infoText = document.createElement('span')
+      infoText.setAttribute('class', 'infoText')
       infoText.innerText = " No examples added";
       div.appendChild(infoText);
       this.infoTexts.push(infoText);
@@ -121,7 +129,6 @@ class Main {
         // If classes have been added run predict
         logits = infer();
         const res = await this.knn.predictClass(logits, TOPK);
-        console.log(res.confidences);
         for (let i = 0; i < NUM_CLASSES; i++) {
 
           // The number of examples for each class
@@ -137,11 +144,70 @@ class Main {
 
           // Update info text
           if (exampleCount[i] > 0) {
+            globalRef[i] = res.confidences[i] * 100
+
 
             this.infoTexts[i].innerText = ` ${exampleCount[i]} examples - ${res.confidences[i] * 100}%`
           }
         }
       }
+
+      (function () {
+        function speak(text) {
+          // Create a new instance of SpeechSynthesisUtterance.
+          var msg = new SpeechSynthesisUtterance();
+
+          // Set the text.
+          msg.text = text;
+
+          // // Set the attributes.
+          // msg.volume = parseFloat(volumeInput.value);
+          // msg.rate = parseFloat(rateInput.value);
+          // msg.pitch = parseFloat(pitchInput.value);
+
+          // If a voice has been selected, find the voice and set the
+          // utterance instance's voice attribute.
+          // if (voiceSelect.value) {
+          //   msg.voice = speechSynthesis.getVoices().filter(function (voice) { return voice.name == voiceSelect.value; })[0];
+          // }
+
+          // Queue this utterance.
+          window.speechSynthesis.speak(msg);
+        }
+
+
+
+
+        if (globalRef[0] > 90 && changeflag == false && callcount == 0) {
+          speak('Hello Joshua');
+          changeflag = true;
+          callcount++
+        }
+        if (globalRef[1] > 90 && changeflag1 == false && callcount1 == 0) {
+          let input = document.getElementById('speech-msg1')
+          speak(input);
+          changeflag1 = true;
+          callcount1++
+          changeflag = false;
+          callcount--
+          changeflag2 = false;
+          callcount2--
+        }
+        if (globalRef[2] > 90 && changeflag2 == false && callcount2 == 0) {
+          speak('Advanced Cardiac Life Support Started');
+          changeflag2 = true;
+          callcount2++
+          callcount--
+          changeflag = false
+          callcount1--
+          changeflag1 = false
+
+        }
+
+
+      })()
+
+
 
       // Dispose image when done
       image.dispose();

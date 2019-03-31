@@ -1,8 +1,6 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 'use strict';
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,53 +39,13 @@ var NUM_CLASSES = 3;
 var IMAGE_SIZE = 227;
 // K value for KNN
 var TOPK = 3;
-
-var TextToSpeech = function () {
-  function TextToSpeech() {
-    _classCallCheck(this, TextToSpeech);
-
-    this.voices = [];
-    this.voice = null;
-    this.message = null;
-    if ((typeof speechSynthesis === 'undefined' ? 'undefined' : _typeof(speechSynthesis)) === 'object' && typeof speechSynthesis.onvoiceschanged === 'function') {
-      speechSynthesis.onvoiceschanged = this.setVoice;
-    }
-  }
-
-  _createClass(TextToSpeech, [{
-    key: 'setVoice',
-    value: function setVoice() {
-      this.voices = window.speechSynthesis.getVoices();
-      this.voice = this.voices.filter(function (voice) {
-        return voice.name === 'Google US English Female';
-      })[0];
-    }
-  }, {
-    key: 'stop',
-    value: function stop() {
-      window.speechSynthesis.cancel();
-    }
-  }, {
-    key: 'say',
-    value: function say(text, callback) {
-      this.message = new SpeechSynthesisUtterance();
-      this.message.text = text;
-      this.message.voice = this.voice;
-      this.message.rate = 0.9;
-      this.message.lang = 'en-US';
-      this.message.addEventListener('end', callback);
-      window.speechSynthesis.speak(this.message);
-    }
-  }]);
-
-  return TextToSpeech;
-}();
-
-var text2Speech = new TextToSpeech();
-var hashmap = {};
-if (hashmap[0] > 90) {
-  text2Speech.say('Take Action Number One');
-}
+var globalRef = {};
+var callcount = 0;
+var changeflag = false;
+var callcount1 = 0;
+var changeflag1 = false;
+var callcount2 = 0;
+var changeflag2 = false;
 
 var Main = function () {
   function Main() {
@@ -132,6 +90,7 @@ var Main = function () {
 
       // Create info text
       var infoText = document.createElement('span');
+      infoText.setAttribute('class', 'infoText');
       infoText.innerText = " No examples added";
       div.appendChild(infoText);
       _this.infoTexts.push(infoText);
@@ -209,7 +168,7 @@ var Main = function () {
           switch (_context2.prev = _context2.next) {
             case 0:
               if (!this.videoPlaying) {
-                _context2.next = 14;
+                _context2.next = 15;
                 break;
               }
 
@@ -247,7 +206,6 @@ var Main = function () {
             case 10:
               res = _context2.sent;
 
-
               for (i = 0; i < NUM_CLASSES; i++) {
 
                 // The number of examples for each class
@@ -263,8 +221,7 @@ var Main = function () {
 
                 // Update info text
                 if (exampleCount[i] > 0) {
-
-                  hashmap[i] = res.confidences[i] * 100;
+                  globalRef[i] = res.confidences[i] * 100;
 
                   this.infoTexts[i].innerText = ' ' + exampleCount[i] + ' examples - ' + res.confidences[i] * 100 + '%';
                 }
@@ -272,16 +229,64 @@ var Main = function () {
 
             case 12:
 
+              (function () {
+                function speak(text) {
+                  // Create a new instance of SpeechSynthesisUtterance.
+                  var msg = new SpeechSynthesisUtterance();
+
+                  // Set the text.
+                  msg.text = text;
+
+                  // // Set the attributes.
+                  // msg.volume = parseFloat(volumeInput.value);
+                  // msg.rate = parseFloat(rateInput.value);
+                  // msg.pitch = parseFloat(pitchInput.value);
+
+                  // If a voice has been selected, find the voice and set the
+                  // utterance instance's voice attribute.
+                  // if (voiceSelect.value) {
+                  //   msg.voice = speechSynthesis.getVoices().filter(function (voice) { return voice.name == voiceSelect.value; })[0];
+                  // }
+
+                  // Queue this utterance.
+                  window.speechSynthesis.speak(msg);
+                }
+
+                if (globalRef[0] > 90 && changeflag == false && callcount == 0) {
+                  speak('Hello Joshua');
+                  changeflag = true;
+                  callcount++;
+                }
+                if (globalRef[1] > 90 && changeflag1 == false && callcount1 == 0) {
+                  speak('Medication Administered');
+                  changeflag1 = true;
+                  callcount1++;
+                  changeflag = false;
+                  callcount--;
+                  changeflag2 = false;
+                  callcount2--;
+                }
+                if (globalRef[2] > 90 && changeflag2 == false && callcount2 == 0) {
+                  speak('Advanced Cardiac Life Support Started');
+                  changeflag2 = true;
+                  callcount2++;
+                  callcount--;
+                  changeflag = false;
+                  callcount1--;
+                  changeflag1 = false;
+                }
+              })();
+
               // Dispose image when done
               image.dispose();
               if (logits != null) {
                 logits.dispose();
               }
 
-            case 14:
+            case 15:
               this.timer = requestAnimationFrame(this.animate.bind(this));
 
-            case 15:
+            case 16:
             case 'end':
               return _context2.stop();
           }

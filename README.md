@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 ## AI Electronic Documentation Assistant
 
 **Assisting Providers with Documentation and Medication Administration**
